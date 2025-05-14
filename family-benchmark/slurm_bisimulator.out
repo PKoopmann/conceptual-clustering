@@ -1,0 +1,39 @@
+2025/05/14 14:27:07 Reading started
+2025/05/14 14:27:07 done with 0 triples
+2025/05/14 14:27:07 Time taken for reading = 1 ms, memory = 4096 kB
+2025/05/14 14:27:07 Time taken for creating reverse index = 1 ms, memory = 4096 kB
+2025/05/14 14:27:07 Graph read with 204 nodes
+2025/05/14 14:27:07 level 1, blocks = 30, accumulated blocks = 31, singletons = 2, total = 30, time = 0 ms, memory = 4096 kB
+2025/05/14 14:27:07 level 2, blocks = 159, accumulated blocks = 187, singletons = 140, total = 159, time = 0 ms, memory = 4096 kB
+2025/05/14 14:27:07 level 3, blocks = 198, accumulated blocks = 242, singletons = 192, total = 198, time = 0 ms, memory = 4096 kB
+2025/05/14 14:27:07 level 4, blocks = 199, accumulated blocks = 244, singletons = 194, total = 199, time = 0 ms, memory = 4096 kB
+2025/05/14 14:27:07 level 5, blocks = 199, accumulated blocks = 244, singletons = 194, total = 199, time = 0 ms, memory = 4096 kB
+
+Step: Read graph, time = 0 ms, memory = 4096 kB
+
+Step: 0000-bisimulation, time = 0 ms, memory = 4096 kB
+
+Step: 0000-bisimulation (condensed) writing outcome to disk, time = 0 ms, memory = 4096 kB
+
+Step: 0001-bisimulation, time = 0 ms, memory = 4096 kB
+Step: 0001-bisimulation writing 0000 to 0001 refines edges to disk, time = 0 ms, memory = 4096 kB
+Step: 0001-bisimulation (condensed) writing outcome to disk, time = 0 ms, memory = 4096 kB
+
+Step: 0002-bisimulation, time = 0 ms, memory = 4096 kB
+Step: 0002-bisimulation writing 0001 to 0002 refines edges to disk, time = 0 ms, memory = 4096 kB
+Step: 0002-bisimulation (condensed) writing outcome to disk, time = 0 ms, memory = 4096 kB
+
+Step: 0003-bisimulation, time = 0 ms, memory = 4096 kB
+Step: 0003-bisimulation writing 0002 to 0003 refines edges to disk, time = 0 ms, memory = 4096 kB
+Step: 0003-bisimulation (condensed) writing outcome to disk, time = 0 ms, memory = 4096 kB
+
+Step: 0004-bisimulation, time = 0 ms, memory = 4096 kB
+Step: 0004-bisimulation writing 0003 to 0004 refines edges to disk, time = 0 ms, memory = 4096 kB
+Step: 0004-bisimulation (condensed) writing outcome to disk, time = 0 ms, memory = 4096 kB
+
+Step: 0005-bisimulation, time = 0 ms, memory = 4096 kB
+Step: 0005-bisimulation writing 0004 to 0005 refines edges to disk, time = 0 ms, memory = 4096 kB
+Step: 0005-bisimulation (condensed) writing outcome to disk, time = 0 ms, memory = 4096 kB
+
+2025/05/14 14:27:07 Time taken for the bisimulation = 1 ms
+2025/05/14 14:27:07 Maximum memory footprint = 4096 kB

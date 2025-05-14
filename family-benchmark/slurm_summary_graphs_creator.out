@@ -1,0 +1,22 @@
+2025/05/14 14:27:07 Setting up 
+2025/05/14 14:27:07 Reading outcomes started
+2025/05/14 14:27:07 Processing k=0
+2025/05/14 14:27:07 Processing k=1
+2025/05/14 14:27:07 Processing k=2
+2025/05/14 14:27:07 Processing k=3
+2025/05/14 14:27:07 Processing k=4
+2025/05/14 14:27:07 Final outcome loaded (Time taken = 1 ms, memory = 4352 kB)
+2025/05/14 14:27:07 Load graph edges
+2025/05/14 14:27:07 Creating initial condensed data edges (0004-->0004) 
+2025/05/14 14:27:07 Reading started
+2025/05/14 14:27:07 done with 0 triples
+2025/05/14 14:27:07 Time taken = 1 ms, memory = 4736 kB
+2025/05/14 14:27:07 Creating condensed data edges (0004-->0003) (Time taken: 1 ms, memory = 4736 kB)
+2025/05/14 14:27:07 Creating condensed data edges (0003-->0002) (Time taken: 2 ms, memory = 4736 kB)
+2025/05/14 14:27:07 Creating condensed data edges (0002-->0001) (Time taken: 2 ms, memory = 4864 kB)
+2025/05/14 14:27:07 Creating condensed data edges (0001-->0000) (Time taken: 2 ms, memory = 4864 kB)
+2025/05/14 14:27:07 Writing condensed summary graph to disk
+2025/05/14 14:27:07 Writing node intervals to disk
+2025/05/14 14:27:07 Writing local to global block map to disk
+2025/05/14 14:27:07 vertex count: 244
+2025/05/14 14:27:07 edge count: 2527

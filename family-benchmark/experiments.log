@@ -1,0 +1,61 @@
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: Preprocessing the dataset: /home/patrickk/Gits/Tools/ontology-tools/family-benchmark_rich_background.owl.nt/
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: Using the following settings:
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: job_name=preprocessing
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: time=48:00:00
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: N=1
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: ntasks_per_node=1
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: partition=defq
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: output=slurm_preprocessor.out
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: nodelist=
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: skipRDFlists=false
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: skip_literals=false
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: laundromat=false
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: types_to_predicates=true
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: use_lz4=false
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: lz4_command=/usr/local/lz4
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: Creating slurm script
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Warning: sbatch command not found
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: User accepted direct execution
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Prepocessor.Info: Running slurm script directly
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: Performing bisimulation in: /home/patrickk/Gits/Tools/lod_summarization/a78c53d82a60835f0f972bf4d8365b558c045752/family-benchmark_rich_background.owl/
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: Using the following settings:
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: job_name=bisimulating
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: time=48:00:00
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: N=1
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: ntasks_per_node=1
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: partition=defq
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: output=slurm_bisimulator.out
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: nodelist=
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: bisimulation_mode=run_k_bisimulation_store_partition_condensed_timed
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: typed_start=true
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: Creating slurm script
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Warning: sbatch command not found
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: User accepted direct execution
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Bisimulator.Info: Running slurm script directly
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: Creating summary graphs in: /home/patrickk/Gits/Tools/lod_summarization/a78c53d82a60835f0f972bf4d8365b558c045752/family-benchmark_rich_background.owl/
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: Using the following settings:
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: job_name=summary_graphs_creation
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: time=01:00:00
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: N=1
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: ntasks_per_node=1
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: partition=defq
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: output=slurm_summary_graphs_creator.out
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: nodelist=
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: multi_summary=true
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: Creating slurm script
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Warning: sbatch command not found
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: User accepted direct execution
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Summary_Graphs_Creator.Info: Running slurm script directly
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: Serializing in: /home/patrickk/Gits/Tools/lod_summarization/a78c53d82a60835f0f972bf4d8365b558c045752/family-benchmark_rich_background.owl/
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: Using the following settings:
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: job_name=serializing_to_ntriples
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: time=48:00:00
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: N=1
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: ntasks_per_node=1
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: partition=defq
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: output=slurm_serializer.out
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: nodelist=
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: Creating slurm script
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Warning: sbatch command not found
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: User accepted direct execution
+Wed 14 May 14:27:07 CEST 2025 patrick-work-pc Serializer.Info: Running slurm script directly

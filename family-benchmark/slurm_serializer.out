@@ -1,0 +1,4 @@
+Making global_id_to_iri_map, while serializing size and contains edges
+Serializing summary node lifetime intervals
+Serializing refines edges
+Serializing data edges
