@@ -6,13 +6,17 @@ public class BisimulationGraph {
     private final Set<BisimulationNode> nodes = new HashSet<>();
     private final Map<String,BisimulationNode> name2node = new HashMap<>();
 
+    private final Map<BisimulationNode,BisimulationNode> equivalentOnes = new HashMap<>();
+
     public Collection<BisimulationNode> nodes(){
         return Collections.unmodifiableCollection(nodes);
     }
 
     public void restrictToLevel(int maxLevel) {
         List<BisimulationNode> toRemove = new LinkedList<>();
-        nodes.stream().filter(n -> n.level()>maxLevel).forEach(toRemove::add);
+        nodes.stream()
+                .filter(n -> n.level()>maxLevel)
+                .forEach(toRemove::add);
         System.out.println("Nodes: "+ nodes.size());
         System.out.println("Removing "+toRemove.size());
         toRemove.forEach(nodes::remove);
@@ -27,11 +31,16 @@ public class BisimulationGraph {
 
     public void addNode(String name, BisimulationNode node){
         System.out.println(name);
+        //BisimulationNodeOptimizer.optimizeNode(node);
         name2node.put(name,node);
         nodes.add(node);
     }
 
     public BisimulationNode get(String name){
         return name2node.get(name);
+    }
+
+    public boolean contains(BisimulationNode bisimulationNode) {
+        return nodes.contains(bisimulationNode);
     }
 }

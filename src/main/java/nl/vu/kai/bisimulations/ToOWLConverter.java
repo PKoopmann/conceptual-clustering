@@ -22,14 +22,34 @@ public class ToOWLConverter {
     }
 
     public OWLOntology convert(BisimulationGraph graph) throws OWLOntologyCreationException {
-        OWLOntology result = manager.createOntology();
+        return convert(graph, manager.createOntology());
+    }
+
+    public OWLOntology convert(BisimulationGraph graph, OWLOntology basisOntology) {
+        OWLOntology result = basisOntology;
         graph.nodes().forEach(node -> {
             OWLClass clazz = clazz(node);
             OWLClassExpression exp = convert(node);
             result.add(factory.getOWLEquivalentClassesAxiom(clazz,exp));
-            node.refines().forEach(b2 ->
-                    result.add(factory.getOWLSubClassOfAxiom(clazz, clazz(b2))));
+            node.refines()
+                    .stream()
+                    .filter(graph::contains)
+                    .forEach(b2 ->
+                            result.add(factory.getOWLSubClassOfAxiom(clazz, clazz(b2))));
         });
+
+        HierarchyEvaluator evaluator = new HierarchyEvaluator(result);
+
+        graph.nodes().forEach(node -> {
+            OWLClass clazz = clazz(node);
+            long size = evaluator.size(clazz);
+            result.addAxiom(
+                    factory.getOWLAnnotationAssertionAxiom(
+                            clazz.getIRI(),
+                            factory.getRDFSLabel(clazz.getIRI().getShortForm()+" - "+size)));
+
+        });
+
         return result;
     }
 
@@ -64,8 +84,8 @@ public class ToOWLConverter {
         return factory.getOWLClass(
                 IRI.create(
                         shortNames.get(node)+"_"
-                                +node.level()+"_"
-                                +node.size()
+                                +node.level()
+                                //+"_"+node.size()
                 )
         );
     }

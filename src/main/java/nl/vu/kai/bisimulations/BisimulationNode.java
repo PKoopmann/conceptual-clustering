@@ -21,6 +21,12 @@ public class BisimulationNode {
     private Set<BisimulationNode> refines = new HashSet<>();
     private MultiMap<OWLObjectProperty,BisimulationNode> successors = new MultiMap<>();
 
+    private final String id;
+
+    public BisimulationNode(String id) {
+        this.id=id;
+    }
+
     public int getSize() {
         return size;
     }
@@ -71,6 +77,10 @@ public class BisimulationNode {
         return Collections.unmodifiableCollection(classes);
     }
 
+    public Collection<OWLObjectProperty> properties() {
+        return successors.keys();
+    }
+
     public Collection<Pair<OWLObjectProperty,BisimulationNode>> successors() {
         return successors.keys()
                 .stream()
@@ -86,29 +96,36 @@ public class BisimulationNode {
     }
 
 
-    /*@Override
-    public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
-        BisimulationNode that = (BisimulationNode) o;
-        return Objects.equals(classes, that.classes) && Objects.equals(successors, that.successors);
-    }*/
-
     public boolean deepEquals(BisimulationNode other) {
-        if(!equals(other))
-            return false;
+        if(equals(other))
+            return true;
         if(!classes.containsAll(other.classes) || !other.classes.containsAll(classes))
             return false;
         return successors.keys().stream().allMatch(k1 -> {
             Collection<BisimulationNode> otherSuc = other.successors(k1);
             return otherSuc!=null &&
-                    successors(k1).containsAll(otherSuc) &&
-                    otherSuc.containsAll(successors(k1));
+                    successors.get(k1).containsAll(otherSuc) &&
+                    otherSuc.containsAll(successors.get(k1));
         });
     }
 
-    /*
     @Override
-    public int hashCode() {
-        return Objects.hash(classes, successors);
-    }*/
+    public boolean equals(Object other){
+        if(other==null || !(other instanceof BisimulationNode))
+            return false;
+        else
+            return ((BisimulationNode)other).id.equals(id);
+    }
+
+    public int hashcode() {
+        return id.hashCode();
+    }
+
+    public String getID() {
+        return id;
+    }
+
+    public void removeSuccessors(OWLObjectProperty property, List<BisimulationNode> toRemove) {
+        successors.removeAll(property,toRemove);
+    }
 }

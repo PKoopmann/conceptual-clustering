@@ -17,6 +17,22 @@ public class Products {
     private final Map<UnorderedPair<BisimulationNode>,BisimulationNode> cache = new HashMap<>();
 
     int count = 0;
+
+    /**
+     *
+     * @param graph
+     * @param maxIterations put to -1 for unlimited iterations
+     */
+    public void productsFixpoint(BisimulationGraph graph, int maxIterations){
+        int lastSize = 0;
+        while(graph.nodes().size()!=lastSize && maxIterations!=0){
+            maxIterations--;
+            lastSize=graph.nodes().size();
+            addAllProducts(graph);
+            System.out.println("Nodes added: "+(graph.nodes().size()-lastSize));
+        }
+    }
+
     public void addAllProducts(BisimulationGraph graph){
         knownNodes.addAll(graph.nodes());
         Set<BisimulationNode> newNodes = new HashSet<>();
@@ -29,35 +45,50 @@ public class Products {
                         }
                 }
                 ));
-        newNodes.forEach(n -> graph.addNode("Product"+(count++), n));
+        newNodes.forEach(n -> graph.addNode(n.getID(), n));
     }
 
     public BisimulationNode product(BisimulationNode n1, BisimulationNode n2) {
         UnorderedPair<BisimulationNode> pair = new UnorderedPair<>(n1,n2);
         if(cache.containsKey(pair))
             return cache.get(pair);
+        else if(n1.equals(n2))
+            return n1;
+        else if(n1.deepEquals(n2))
+            return n1;
         else if(n1.refines(n2))
             return n2;
         else if(n2.refines(n1))
             return n1;
         else {
-            BisimulationNode result = new BisimulationNode();
-            cache.put(pair,result);
+            BisimulationNode resultCandidate = new BisimulationNode("Product"+(count++));
+            cache.put(pair,resultCandidate);
+            resultCandidate.setLevel(Math.min(n1.level(),n2.level()));
             Set<OWLClass> clazzes = new HashSet<>(n1.classes());
             clazzes.retainAll(n2.classes());
-            result.addClasses(clazzes);
+            resultCandidate.addClasses(clazzes);
             n1.successors()
                     .forEach(sucPair ->
                         n2.successors(sucPair.getKey())
                                 .forEach(suc2 ->
-                                        result.addSuccessor(
+                                        resultCandidate.addSuccessor(
                                                 sucPair.getKey(),
                                                 product(sucPair.getValue(), suc2)))
             );
-            return knownNodes.stream()
-                    .filter(result::deepEquals)
+
+            BisimulationNodeOptimizer.optimizeNode(resultCandidate);
+
+            BisimulationNode result = knownNodes.stream()
+                    .filter(resultCandidate::deepEquals)
                     .findAny()
-                    .orElse(result);
+                    .orElse(resultCandidate);
+
+            if(!n1.equals(result) && !result.refines(n1))
+                n1.addRefines(result);
+            if(!n2.equals(result) && !result.refines(n2))
+                n2.addRefines(result);
+
+            return result;
         }
     }
 }

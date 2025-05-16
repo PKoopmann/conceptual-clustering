@@ -36,16 +36,23 @@ public class StoreInOntology {
         BisimulationGraph graph = parser.parseGraph(new File(args[0]));
 
         graph.restrictToLevel(1);
-        graph.restrictToMinSize(10);
+        //graph.restrictToMinSize(10);
         System.out.println("nodes now: "+graph.nodes().size());
 
         Products products = new Products();
+        /*products.addAllProducts(graph);
+        System.out.println("nodes now: "+graph.nodes().size());
+        products = new Products();
         products.addAllProducts(graph);
         System.out.println("nodes now: "+graph.nodes().size());
-
+        products = new Products();
+        products.addAllProducts(graph);
+        System.out.println("nodes now: "+graph.nodes().size());
+        */
+        products.productsFixpoint(graph,1);
         ToOWLConverter converter = new ToOWLConverter(manager);
-        OWLOntology ont2 = converter.convert(graph);
-        ontology.addAxioms(ont2.axioms());
+        OWLOntology ont2 = converter.convert(graph,ontology);
+        //ontology.addAxioms(ont2.axioms());
 
         manager.saveOntology(ontology, new FileOutputStream(new File("output.owl")));
     }

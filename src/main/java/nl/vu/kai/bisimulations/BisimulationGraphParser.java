@@ -46,7 +46,7 @@ public class BisimulationGraphParser {
                             .split(" "))
                     .map(x -> x.substring(1, x.length()-1))
                     .collect(Collectors.toList());
-            BisimulationNode node = new BisimulationNode();
+            BisimulationNode node = new BisimulationNode(components.get(0));
             node.setSize(Integer.parseInt(components.get(2)));
             result.addNode(components.get(0), node);
         }

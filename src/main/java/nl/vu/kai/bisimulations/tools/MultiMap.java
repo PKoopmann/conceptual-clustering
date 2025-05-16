@@ -26,4 +26,11 @@ public class MultiMap<K,V> {
     public Set<K> keys(){
         return inner.keySet();
     }
+
+    public void removeAll(K key, Collection<V> toRemove) {
+        if(contains(key))
+            inner.get(key).removeAll(toRemove);
+        if(inner.get(key).isEmpty())
+            inner.remove(key);
+    }
 }
