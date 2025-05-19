@@ -60,7 +60,8 @@ public class ToOWLConverter {
         }
         List<OWLClassExpression> conjuncts = new LinkedList<>();
         conjuncts.addAll(node.classes());
-        node.successors().stream()
+        node.successors()
+                .stream()
                 .map(
                 pair ->
                         factory.getOWLObjectSomeValuesFrom(
@@ -77,6 +78,9 @@ public class ToOWLConverter {
     }
 
     public OWLClass clazz(BisimulationNode node) {
+        if(node.removed()){
+            factory.getOWLThing();
+        }
         if(!shortNames.containsKey(node)) {
             shortNames.put(node,"C"+count);
             count++;

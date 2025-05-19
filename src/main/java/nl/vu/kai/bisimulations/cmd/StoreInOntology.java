@@ -49,7 +49,7 @@ public class StoreInOntology {
         products.addAllProducts(graph);
         System.out.println("nodes now: "+graph.nodes().size());
         */
-        products.productsFixpoint(graph,1);
+        products.productsFixpoint(graph,4);
         ToOWLConverter converter = new ToOWLConverter(manager);
         OWLOntology ont2 = converter.convert(graph,ontology);
         //ontology.addAxioms(ont2.axioms());

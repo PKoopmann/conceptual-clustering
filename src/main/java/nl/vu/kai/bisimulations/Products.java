@@ -18,6 +18,8 @@ public class Products {
 
     int count = 0;
 
+
+
     /**
      *
      * @param graph
@@ -36,15 +38,15 @@ public class Products {
     public void addAllProducts(BisimulationGraph graph){
         knownNodes.addAll(graph.nodes());
         Set<BisimulationNode> newNodes = new HashSet<>();
-        graph.nodes().forEach(n1 ->
-                graph.nodes().forEach(n2 -> {
-                        BisimulationNode product = product(n1,n2);
-                        if(!newNodes.stream().anyMatch(product::deepEquals)) {
-                            newNodes.add(product);
-                            System.out.println(newNodes.size());
-                        }
+        for(BisimulationNode n1:graph.nodes()) {
+            for (BisimulationNode n2 : graph.nodes()) {
+                BisimulationNode product = product(n1, n2);
+                if (!newNodes.stream().anyMatch(product::deepEquals) && !knownNodes.stream().anyMatch(product::deepEquals)) {
+                    newNodes.add(product);
+                    System.out.println(newNodes.size());
                 }
-                ));
+            }
+        }
         newNodes.forEach(n -> graph.addNode(n.getID(), n));
     }
 
@@ -54,13 +56,15 @@ public class Products {
             return cache.get(pair);
         else if(n1.equals(n2))
             return n1;
-        else if(n1.deepEquals(n2))
-            return n1;
         else if(n1.refines(n2))
             return n2;
         else if(n2.refines(n1))
             return n1;
-        else {
+        else if(n1.deepEquals(n2)) {
+            //n1.addRefines(n2);
+            //n2.addRefines(n1);
+            return n1;
+        }else {
             BisimulationNode resultCandidate = new BisimulationNode("Product"+(count++));
             cache.put(pair,resultCandidate);
             resultCandidate.setLevel(Math.min(n1.level(),n2.level()));
@@ -83,10 +87,21 @@ public class Products {
                     .findAny()
                     .orElse(resultCandidate);
 
-            if(!n1.equals(result) && !result.refines(n1))
+
+            if(!n1.equals(result)) {
+                if(n1.deepEquals(result)){
+                    n2.addRefines(n1);
+                    return n1;
+                }
                 n1.addRefines(result);
-            if(!n2.equals(result) && !result.refines(n2))
+            }
+            if(!n2.equals(result)) {
+                if(n2.deepEquals(result)){
+                    n1.addRefines(n2);
+                    return n2;
+                }
                 n2.addRefines(result);
+            }
 
             return result;
         }

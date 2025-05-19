@@ -12,21 +12,28 @@ public class BisimulationGraph {
         return Collections.unmodifiableCollection(nodes);
     }
 
+    public void removeNodes(Collection<BisimulationNode> toRemove){
+        System.out.println("Removing "+toRemove.size());
+
+        toRemove.forEach(BisimulationNode::setRemoved);
+        nodes.removeAll(toRemove);
+        nodes.forEach(BisimulationNodeOptimizer::optimizeNode);
+    }
+
     public void restrictToLevel(int maxLevel) {
         List<BisimulationNode> toRemove = new LinkedList<>();
         nodes.stream()
                 .filter(n -> n.level()>maxLevel)
                 .forEach(toRemove::add);
         System.out.println("Nodes: "+ nodes.size());
-        System.out.println("Removing "+toRemove.size());
-        toRemove.forEach(nodes::remove);
-        nodes.removeAll(toRemove);
+
+        removeNodes(toRemove);
     }
 
     public void restrictToMinSize(int minSize) {
         List<BisimulationNode> toRemove = new LinkedList<>();
         nodes.stream().filter(n -> n.size()<minSize).forEach(toRemove::add);
-        nodes.removeAll(toRemove);
+        removeNodes(toRemove);
     }
 
     public void addNode(String name, BisimulationNode node){

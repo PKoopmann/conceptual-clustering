@@ -17,8 +17,9 @@ public class BisimulationNodeOptimizer {
                             node.successors(property)
                                     .stream()
                                     .filter(p2 -> !p1.equals(p2))
-                                    .anyMatch(p1::refines))
+                                    .anyMatch(p2 -> !toRemove.contains(p2) && (p1.removed() || p2.refines(p1))))
                     .forEach(toRemove::add);
+            assert node.successors(property).size()!=toRemove.size();
             node.removeSuccessors(property,toRemove);
         }
     }

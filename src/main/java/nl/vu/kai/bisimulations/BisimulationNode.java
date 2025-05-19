@@ -21,10 +21,20 @@ public class BisimulationNode {
     private Set<BisimulationNode> refines = new HashSet<>();
     private MultiMap<OWLObjectProperty,BisimulationNode> successors = new MultiMap<>();
 
+    private boolean removed = false;
+
     private final String id;
 
     public BisimulationNode(String id) {
         this.id=id;
+    }
+
+    public void setRemoved(){
+        this.removed=true;
+    }
+
+    public boolean removed(){
+        return removed;
     }
 
     public int getSize() {
@@ -95,18 +105,23 @@ public class BisimulationNode {
         return successors.get(property);
     }
 
-
-    public boolean deepEquals(BisimulationNode other) {
+    public boolean deepRefines(BisimulationNode other) {
         if(equals(other))
             return true;
-        if(!classes.containsAll(other.classes) || !other.classes.containsAll(classes))
+        if(!classes.containsAll(other.classes))
             return false;
-        return successors.keys().stream().allMatch(k1 -> {
-            Collection<BisimulationNode> otherSuc = other.successors(k1);
+        return other.successors
+                .keys()
+                .stream()
+                .allMatch(prp -> {
+            Collection<BisimulationNode> otherSuc = successors(prp);
             return otherSuc!=null &&
-                    successors.get(k1).containsAll(otherSuc) &&
-                    otherSuc.containsAll(successors.get(k1));
+                    otherSuc.containsAll(other.successors.get(prp));
         });
+    }
+
+    public boolean deepEquals(BisimulationNode other) {
+        return deepRefines(other) && other.deepRefines(this);
     }
 
     @Override
@@ -127,5 +142,15 @@ public class BisimulationNode {
 
     public void removeSuccessors(OWLObjectProperty property, List<BisimulationNode> toRemove) {
         successors.removeAll(property,toRemove);
+    }
+
+    @Override
+    public String toString() {
+        return classes.stream()
+                .map(x -> x.getIRI().getShortForm()).
+                collect(Collectors.joining(", "))
+                + ", "+successors().stream()
+                .map(pair -> pair.getKey().getIRI().getShortForm()+"."+pair.getValue().getID())
+                .collect(Collectors.joining(", "));
     }
 }

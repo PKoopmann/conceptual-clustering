@@ -7,7 +7,9 @@ import org.semanticweb.owlapi.model.parameters.Imports;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class BisimulationGraphParser {
@@ -95,6 +97,24 @@ public class BisimulationGraphParser {
                 node.setLevel(Integer.parseInt(components.get(2)));
             }
         }
+
+        Set<BisimulationNode> duplicates = new HashSet<>();
+
+        result.nodes().forEach(n1 ->
+                result.nodes()
+                        .stream()
+                        .filter(x -> !x.equals(n1))
+                        .filter(n1::deepEquals)
+                        .filter( x-> !duplicates.contains(x))
+                        .forEach(x-> duplicates.add(n1)));
+
+        System.out.println("Duplicate nodes: "+duplicates);
+        // duplicate cannot be removed without causing complications due references
+        // TODO safe way would be to identify them
+
+        //result.removeNodes(toRemove);
+
+        //result.nodes().forEach(BisimulationNodeOptimizer::optimizeNode);
 
         return result;
     }
