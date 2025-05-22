@@ -3,6 +3,7 @@ package nl.vu.kai.bisimulations;
 import nl.vu.kai.bisimulations.tools.Pair;
 import nl.vu.kai.bisimulations.tools.UnorderedPair;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLObjectProperty;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -37,17 +38,20 @@ public class Products {
 
     public void addAllProducts(BisimulationGraph graph){
         knownNodes.addAll(graph.nodes());
+        Set<BisimulationNode> previouslyKnown = new HashSet<>(knownNodes);
         Set<BisimulationNode> newNodes = new HashSet<>();
         for(BisimulationNode n1:graph.nodes()) {
             for (BisimulationNode n2 : graph.nodes()) {
                 BisimulationNode product = product(n1, n2);
-                if (!newNodes.stream().anyMatch(product::deepEquals) && !knownNodes.stream().anyMatch(product::deepEquals)) {
-                    newNodes.add(product);
-                    System.out.println(newNodes.size());
-                }
+                //if (!knownNodes.stream().anyMatch(product::deepEquals)) {
+                //    newNodes.add(product);
+                //    knownNodes.add(product);
+                    //System.out.println(newNodes.size());
+                //}
             }
         }
-        newNodes.forEach(n -> graph.addNode(n.getID(), n));
+        knownNodes.removeAll(previouslyKnown);
+        knownNodes.forEach(n -> graph.addNode(n.getID(), n));
     }
 
     public BisimulationNode product(BisimulationNode n1, BisimulationNode n2) {
@@ -56,9 +60,9 @@ public class Products {
             return cache.get(pair);
         else if(n1.equals(n2))
             return n1;
-        else if(n1.refines(n2))
+        else if(n1.refines(n2)|| n1.deepRefines(n2))
             return n2;
-        else if(n2.refines(n1))
+        else if(n2.refines(n1) || n2.deepRefines(n1))
             return n1;
         else if(n1.deepEquals(n2)) {
             //n1.addRefines(n2);
@@ -71,14 +75,14 @@ public class Products {
             Set<OWLClass> clazzes = new HashSet<>(n1.classes());
             clazzes.retainAll(n2.classes());
             resultCandidate.addClasses(clazzes);
-            n1.successors()
-                    .forEach(sucPair ->
-                        n2.successors(sucPair.getKey())
-                                .forEach(suc2 ->
-                                        resultCandidate.addSuccessor(
-                                                sucPair.getKey(),
-                                                product(sucPair.getValue(), suc2)))
-            );
+
+            for(Pair<OWLObjectProperty,BisimulationNode> sucPair: n1.successors()){
+                for(BisimulationNode suc2: n2.successors(sucPair.getKey())) {
+                    resultCandidate.addSuccessor(
+                            sucPair.getKey(),
+                            product(sucPair.getValue(), suc2));
+                }
+            }
 
             BisimulationNodeOptimizer.optimizeNode(resultCandidate);
 
@@ -87,6 +91,7 @@ public class Products {
                     .findAny()
                     .orElse(resultCandidate);
 
+            cache.put(pair,result);
 
             if(!n1.equals(result)) {
                 if(n1.deepEquals(result)){
@@ -102,6 +107,8 @@ public class Products {
                 }
                 n2.addRefines(result);
             }
+
+            knownNodes.add(result);
 
             return result;
         }

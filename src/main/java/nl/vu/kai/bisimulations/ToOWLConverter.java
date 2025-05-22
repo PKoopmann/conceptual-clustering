@@ -2,12 +2,11 @@ package nl.vu.kai.bisimulations;
 
 import org.semanticweb.owlapi.model.*;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ToOWLConverter {
+
+    private final static boolean UNFOLD_ALL=true;
 
     private final OWLOntologyManager manager;
     private final OWLDataFactory factory;
@@ -38,17 +37,7 @@ public class ToOWLConverter {
                             result.add(factory.getOWLSubClassOfAxiom(clazz, clazz(b2))));
         });
 
-        HierarchyEvaluator evaluator = new HierarchyEvaluator(result);
-
-        graph.nodes().forEach(node -> {
-            OWLClass clazz = clazz(node);
-            long size = evaluator.size(clazz);
-            result.addAxiom(
-                    factory.getOWLAnnotationAssertionAxiom(
-                            clazz.getIRI(),
-                            factory.getRDFSLabel(clazz.getIRI().getShortForm()+" - "+size)));
-
-        });
+        //HierarchyEvaluator evaluator = new HierarchyEvaluator(result);
 
         return result;
     }
@@ -58,23 +47,54 @@ public class ToOWLConverter {
             shortNames.put(node,"C"+count);
             count++;
         }
-        List<OWLClassExpression> conjuncts = new LinkedList<>();
-        conjuncts.addAll(node.classes());
-        node.successors()
-                .stream()
-                .map(
-                pair ->
-                        factory.getOWLObjectSomeValuesFrom(
-                                pair.getKey(),
-                                clazz(pair.getValue())))
-                .forEach(conjuncts::add);
+        if(UNFOLD_ALL)
+            return convert(node,Collections.EMPTY_SET);
+        else {
+            List<OWLClassExpression> conjuncts = new LinkedList<>();
+            conjuncts.addAll(node.classes());
+            node.successors()
+                    .stream()
+                    .map(
+                            pair ->
+                                    factory.getOWLObjectSomeValuesFrom(
+                                            pair.getKey(),
+                                            clazz(pair.getValue())))
+                    .forEach(conjuncts::add);
 
-        if(conjuncts.isEmpty())
-            return factory.getOWLThing();
-        else if(conjuncts.size()==1)
-            return conjuncts.get(0);
-        else
-            return factory.getOWLObjectIntersectionOf(conjuncts);
+            if (conjuncts.isEmpty())
+                return factory.getOWLThing();
+            else if (conjuncts.size() == 1)
+                return conjuncts.get(0);
+            else
+                return factory.getOWLObjectIntersectionOf(conjuncts);
+        }
+    }
+
+    public OWLClassExpression convert(BisimulationNode node, Set<BisimulationNode> visited) {
+        if(visited.contains(node))
+            return clazz(node);
+        else {
+            Set<BisimulationNode> newVisited = new HashSet<>(visited);
+            newVisited.add(node);
+
+            List<OWLClassExpression> conjuncts = new LinkedList<>();
+            conjuncts.addAll(node.classes());
+            node.successors()
+                    .stream()
+                    .map(
+                            pair ->
+                                    factory.getOWLObjectSomeValuesFrom(
+                                            pair.getKey(),
+                                            convert(pair.getValue(), newVisited)))
+                    .forEach(conjuncts::add);
+
+            if(conjuncts.isEmpty())
+                return factory.getOWLThing();
+            else if(conjuncts.size()==1)
+                return conjuncts.get(0);
+            else
+                return factory.getOWLObjectIntersectionOf(conjuncts);
+        }
     }
 
     public OWLClass clazz(BisimulationNode node) {
@@ -94,4 +114,18 @@ public class ToOWLConverter {
         );
     }
 
+    public void addUtility2Label(OWLOntology ontology, BisimulationGraph graph, BisimulationGraphEvaluator evaluator) {
+
+        graph.nodes().forEach(node -> {
+            long size = evaluator.size(node);
+            double utility = evaluator.utility(node);
+            OWLClass clazz = clazz(node);
+            ontology.addAxiom(
+                    factory.getOWLAnnotationAssertionAxiom(
+                            clazz.getIRI(),
+                            factory.getRDFSLabel(clazz.getIRI().getShortForm()+" - "+size+" - "+utility)));
+
+        });
+
+    }
 }

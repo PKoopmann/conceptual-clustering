@@ -12,7 +12,10 @@ public class MultiMap<K,V> {
     }
 
     public Set<V> get(K key){
-        return inner.getOrDefault(key, Collections.emptySet());
+
+        return Collections.unmodifiableSet(
+                inner.getOrDefault(key, Collections.emptySet()
+                ));
     }
 
     public boolean contains(K key) {

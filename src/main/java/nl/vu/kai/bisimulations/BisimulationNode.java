@@ -114,9 +114,10 @@ public class BisimulationNode {
                 .keys()
                 .stream()
                 .allMatch(prp -> {
-            Collection<BisimulationNode> otherSuc = successors(prp);
-            return otherSuc!=null &&
-                    otherSuc.containsAll(other.successors.get(prp));
+            Collection<BisimulationNode> suc = successors(prp);
+            return suc!=null &&
+                    suc.containsAll(other.successors.get(prp)) ||
+                    other.successors.get(prp).stream().allMatch(otherS ->suc.stream().anyMatch(x->x.refines(otherS)));
         });
     }
 
@@ -140,7 +141,7 @@ public class BisimulationNode {
         return id;
     }
 
-    public void removeSuccessors(OWLObjectProperty property, List<BisimulationNode> toRemove) {
+    public void removeSuccessors(OWLObjectProperty property, Collection<BisimulationNode> toRemove) {
         successors.removeAll(property,toRemove);
     }
 

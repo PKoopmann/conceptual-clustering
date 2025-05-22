@@ -8,6 +8,16 @@ public class BisimulationGraph {
 
     private final Map<BisimulationNode,BisimulationNode> equivalentOnes = new HashMap<>();
 
+    private BisimulationNode topNode;
+
+    public BisimulationNode getTopNode() {
+        return topNode;
+    }
+
+    public void setTopNode(BisimulationNode topNode) {
+        this.topNode = topNode;
+    }
+
     public Collection<BisimulationNode> nodes(){
         return Collections.unmodifiableCollection(nodes);
     }
@@ -18,6 +28,11 @@ public class BisimulationGraph {
         toRemove.forEach(BisimulationNode::setRemoved);
         nodes.removeAll(toRemove);
         nodes.forEach(BisimulationNodeOptimizer::optimizeNode);
+    }
+
+    public void removeNode(BisimulationNode node) {
+        nodes.remove(node);
+        node.setRemoved();
     }
 
     public void restrictToLevel(int maxLevel) {
@@ -50,4 +65,5 @@ public class BisimulationGraph {
     public boolean contains(BisimulationNode bisimulationNode) {
         return nodes.contains(bisimulationNode);
     }
+
 }

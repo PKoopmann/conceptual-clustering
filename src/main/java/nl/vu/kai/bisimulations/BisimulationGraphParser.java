@@ -32,8 +32,12 @@ public class BisimulationGraphParser {
     }
 
     public BisimulationGraph parseGraph(File folder) throws IOException {
+        return parseGraph(folder, -1);
+    }
 
-        File sizesFile = new File(folder.getAbsolutePath() + File.separator + FOLDER+File.separator+"sizes.nt");
+    public BisimulationGraph parseGraph(File folder, int maxLevel) throws IOException {
+
+        File sizesFile = new File(folder.getAbsolutePath() + File.separator +  FOLDER+File.separator+"sizes.nt");
         File dataFile = new File(folder.getAbsolutePath() + File.separator +  FOLDER+File.separator+"data.nt");
         File refinesFile = new File(folder.getAbsolutePath() + File.separator +  FOLDER+File.separator+"refines.nt");
         File intervalsFile = new File(folder.getAbsolutePath() + File.separator +  FOLDER+File.separator+"intervals.nt");
@@ -53,6 +57,25 @@ public class BisimulationGraphParser {
             result.addNode(components.get(0), node);
         }
 
+        reader = new BufferedReader(new FileReader(intervalsFile));
+        for (String line; (line = reader.readLine()) != null; ) {
+            List<String> components = Arrays
+                    .stream(line
+                            .substring(0, line.length() - 2)
+                            .split(" "))
+                    .map(x -> x.substring(1, x.length() - 1))
+                    .collect(Collectors.toList());
+            if(components.get(1).equals(LEVEL)) {
+                BisimulationNode node = result.get(components.get(0));
+                node.setLevel(Integer.parseInt(components.get(2)));
+                if(maxLevel>-1 && node.level()>maxLevel) {
+                    result.removeNode(node);
+                }
+                if(node.level()==0)
+                    result.setTopNode(node);
+            }
+        }
+
         reader = new BufferedReader(new FileReader(dataFile));
         for (String line; (line = reader.readLine()) != null; ) {
             List<String> components = Arrays
@@ -69,7 +92,8 @@ public class BisimulationGraphParser {
             } else {
                 OWLObjectProperty property = factory.getOWLObjectProperty(IRI.create(components.get(1)));
                 BisimulationNode successor = result.get(components.get(2));
-                node.addSuccessor(property, successor);
+                if(!successor.removed())
+                    node.addSuccessor(property, successor);
             }
         }
         reader = new BufferedReader(new FileReader(refinesFile));
@@ -84,21 +108,10 @@ public class BisimulationGraphParser {
             node.addRefines(result.get(components.get(2)));
         }
 
-        reader = new BufferedReader(new FileReader(intervalsFile));
-        for (String line; (line = reader.readLine()) != null; ) {
-            List<String> components = Arrays
-                    .stream(line
-                            .substring(0, line.length() - 2)
-                            .split(" "))
-                    .map(x -> x.substring(1, x.length() - 1))
-                    .collect(Collectors.toList());
-            if(components.get(1).equals(LEVEL)) {
-                BisimulationNode node = result.get(components.get(0));
-                node.setLevel(Integer.parseInt(components.get(2)));
-            }
-        }
 
         Set<BisimulationNode> duplicates = new HashSet<>();
+
+        identifyTopNode(result);
 
         result.nodes().forEach(n1 ->
                 result.nodes()
@@ -109,6 +122,8 @@ public class BisimulationGraphParser {
                         .forEach(x-> duplicates.add(n1)));
 
         System.out.println("Duplicate nodes: "+duplicates);
+        if(duplicates.size()>0)
+            System.exit(1);
         // duplicate cannot be removed without causing complications due references
         // TODO safe way would be to identify them
 
@@ -117,5 +132,34 @@ public class BisimulationGraphParser {
         //result.nodes().forEach(BisimulationNodeOptimizer::optimizeNode);
 
         return result;
+    }
+
+    /**
+     * Workaround needed since result sometimes contains a node without edges twice
+     */
+    private void identifyTopNode(BisimulationGraph graph) {
+        Set<BisimulationNode> duplicateTopNodes = graph.nodes()
+                .stream()
+                .filter(x -> x.classes().isEmpty() && x.successors().isEmpty())
+                .collect(Collectors.toSet());
+        duplicateTopNodes.remove(graph.getTopNode());
+        if(duplicateTopNodes.isEmpty())
+            return;
+        else {
+            graph.nodes().forEach(node -> {
+                List<OWLObjectProperty> ps = node.properties()
+                        .stream()
+                        .filter(p -> node.successors(p)
+                                .stream()
+                                .anyMatch(duplicateTopNodes::contains))
+                        .collect(Collectors.toUnmodifiableList());
+                ps.forEach(p -> {
+                    node.addSuccessor(p, graph.getTopNode());
+                    node.removeSuccessors(p, duplicateTopNodes);
+                });
+            });
+            graph.removeNodes(duplicateTopNodes);
+        }
+
     }
 }
