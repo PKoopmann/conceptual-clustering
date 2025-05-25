@@ -25,14 +25,19 @@ public class ToOWLConverter {
     }
 
     public OWLOntology convert(BisimulationGraph graph, OWLOntology basisOntology) {
+        return convert(graph.nodes(), basisOntology);
+    }
+
+    public OWLOntology convert(Collection<BisimulationNode> nodes, OWLOntology basisOntology) {
         OWLOntology result = basisOntology;
-        graph.nodes().forEach(node -> {
+
+        nodes.forEach(node -> {
             OWLClass clazz = clazz(node);
             OWLClassExpression exp = convert(node);
             result.add(factory.getOWLEquivalentClassesAxiom(clazz,exp));
             node.refines()
                     .stream()
-                    .filter(graph::contains)
+                    .filter(nodes::contains)
                     .forEach(b2 ->
                             result.add(factory.getOWLSubClassOfAxiom(clazz, clazz(b2))));
         });

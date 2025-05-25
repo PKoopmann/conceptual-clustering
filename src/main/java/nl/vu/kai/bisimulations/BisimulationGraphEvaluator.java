@@ -38,14 +38,27 @@ public class BisimulationGraphEvaluator {
     public double utility(BisimulationNode node){
         Set<OWLNamedIndividual> superCategory=ontology.getIndividualsInSignature(Imports.INCLUDED);
         Set<OWLNamedIndividual> specificCategory=individuals(node);
-        return computeUtility(superCategory,specificCategory);
+        return relativeUtility(superCategory,specificCategory);
     }
 
     public Set<OWLNamedIndividual> individuals(BisimulationNode node){
         return reasoner.getInstances(converter.clazz(node)).getFlattened();
     }
 
-    private double computeUtility(Set<OWLNamedIndividual> superCategory, Set<OWLNamedIndividual> specificCategory) {
+    public boolean intersect(BisimulationNode n1, BisimulationNode n2){
+        Set<OWLNamedIndividual> s1 = individuals(n1);
+        Set<OWLNamedIndividual> s2 = individuals(n2);
+        return s1.stream().anyMatch(s2::contains);
+    }
+
+    public double relativeUtility(BisimulationNode superNode, BisimulationNode subNode){
+        Set<OWLNamedIndividual> s1 = individuals(superNode);
+        Set<OWLNamedIndividual> s2 = individuals(subNode);
+        s2.retainAll(s1);
+        return relativeUtility(s1,s2);
+    }
+
+    public double relativeUtility(Set<OWLNamedIndividual> superCategory, Set<OWLNamedIndividual> specificCategory) {
         double superSize = superCategory.size();
         double specificSize = specificCategory.size();
         if(specificSize==0)

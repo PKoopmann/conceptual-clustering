@@ -1,7 +1,13 @@
 package nl.vu.kai.bisimulations.cmd;
 
 import nl.vu.kai.bisimulations.*;
+import nl.vu.kai.bisimulations.clustering.ClusteringExtractor;
+import nl.vu.kai.bisimulations.clustering.GreedyClustering;
+import nl.vu.kai.bisimulations.clustering.TopNClusters;
 import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxFrameRenderer;
+import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
+import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxObjectRenderer;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
@@ -10,6 +16,9 @@ import org.semanticweb.owlapi.model.OWLOntologyStorageException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collection;
+
+import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
 public class ExtractHierarchy {
     public static void main(String[] args) throws OWLOntologyCreationException, IOException, OWLOntologyStorageException {
@@ -56,9 +65,24 @@ public class ExtractHierarchy {
         System.out.println("Done with the products");
         ToOWLConverter converter = new ToOWLConverter(manager);
         OWLOntology ont2 = converter.convert(graph,ontology);
-        converter.addUtility2Label(ontology, graph, new BisimulationGraphEvaluator(graph,ontology));
+        BisimulationGraphEvaluator evaluator = new BisimulationGraphEvaluator(graph,ontology);
+        converter.addUtility2Label(ontology, graph, evaluator);
         //ontology.addAxioms(ont2.axioms());
 
         manager.saveOntology(ontology, new FileOutputStream(new File("output.owl")));
+
+        ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
+
+        ClusteringExtractor extractor = new GreedyClustering(); //new TopNClusters(5);
+        Collection<BisimulationNode> clustering = extractor.extractClustering(graph,evaluator);
+        System.out.println("Number of clusters: "+clustering.size());
+        /*clustering.stream()
+                .map(converter::convert)
+                .map(renderer::render)
+                .forEach(System.out::println);*/
+        OWLOntology clusteringResult = converter.convert(clustering,ontology);
+        converter.addUtility2Label(ontology, graph, evaluator);
+        manager.saveOntology(ontology, new FileOutputStream(new File("clustering-result.owl")));
+
     }
 }
