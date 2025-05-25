@@ -1,0 +1,3 @@
+[submodule "lod_summarization"]
+	path = lod_summarization
+	url = git@github.com:R-van-Bakel/lod_summarization.git
