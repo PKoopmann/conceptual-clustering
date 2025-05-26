@@ -45,7 +45,7 @@ public class GreedyClustering implements ClusteringExtractor{
 
         System.out.println(currentValue>previousValue);
 
-        while(currentValue>previousValue) {
+        while(currentValue>=previousValue) {
 
             previousValue=currentValue;
 
@@ -102,9 +102,10 @@ public class GreedyClustering implements ClusteringExtractor{
         nodes.forEach(node1 -> {
             SortedSet<Pair<BisimulationNode,Double>> current = new TreeSet<>(new PairComparator());
             nodes.forEach(node2 -> {
-                if(evaluator.intersect(node1,node2)) {
-                    double value = evaluator.relativeUtility(node1, node2);
-                    current.add(new Pair<>(node2,Math.abs(value)));
+                //if(evaluator.intersect(node1,node2)) {
+                if(!node2.equals(node1)){
+                    double value = Math.abs(evaluator.relativeUtility(node1, node2));
+                    current.add(new Pair<>(node2,value));
                 }
             });
             matrix.put(node1,current);

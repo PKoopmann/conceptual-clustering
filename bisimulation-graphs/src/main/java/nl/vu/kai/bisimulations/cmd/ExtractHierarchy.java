@@ -64,6 +64,7 @@ public class ExtractHierarchy {
         products.productsFixpoint(graph,iterations);
         System.out.println("Done with the products");
         ToOWLConverter converter = new ToOWLConverter(manager);
+        converter.setMaxDepth(maxDepth);
         OWLOntology ont2 = converter.convert(graph,ontology);
         BisimulationGraphEvaluator evaluator = new BisimulationGraphEvaluator(graph,ontology);
         converter.addUtility2Label(ontology, graph, evaluator);

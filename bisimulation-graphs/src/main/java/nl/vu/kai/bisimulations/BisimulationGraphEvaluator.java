@@ -54,7 +54,7 @@ public class BisimulationGraphEvaluator {
     public double relativeUtility(BisimulationNode superNode, BisimulationNode subNode){
         Set<OWLNamedIndividual> s1 = individuals(superNode);
         Set<OWLNamedIndividual> s2 = individuals(subNode);
-        s2.retainAll(s1);
+        s1.addAll(s2);
         return relativeUtility(s1,s2);
     }
 
