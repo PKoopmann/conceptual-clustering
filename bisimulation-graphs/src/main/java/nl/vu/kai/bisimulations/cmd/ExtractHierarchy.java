@@ -8,10 +8,8 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxFrameRenderer;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxOWLObjectRendererImpl;
 import org.semanticweb.owlapi.manchestersyntax.renderer.ManchesterOWLSyntaxObjectRenderer;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
-import org.semanticweb.owlapi.model.OWLOntologyStorageException;
+import org.semanticweb.owlapi.model.*;
+import org.semanticweb.owlapi.model.parameters.Imports;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,6 +38,8 @@ public class ExtractHierarchy {
 
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLOntology ontology = manager.loadOntologyFromOntologyDocument(new File(ontologyPath));
+        System.out.println("ABOX SIZE: "+ontology.getABoxAxioms(Imports.INCLUDED).size());
+        System.out.println("INDIVIDUALS: "+ontology.getIndividualsInSignature(Imports.INCLUDED).size());
 
         BisimulationGraphParser parser =
                 new BisimulationGraphParser(
@@ -79,6 +79,7 @@ public class ExtractHierarchy {
         extractor.setTargetSize(10);
         //ClusteringExtractor extractor = new TopNClusters(10);
         Collection<BisimulationNode> clustering = extractor.extractClustering(graph,evaluator);
+        clustering.remove(null);
         System.out.println("Number of clusters: "+clustering.size());
         /*clustering.stream()
                 .map(converter::convert)

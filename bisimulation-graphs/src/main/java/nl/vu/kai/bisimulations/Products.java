@@ -28,8 +28,10 @@ public class Products {
      */
     public void productsFixpoint(BisimulationGraph graph, int maxIterations){
         int lastSize = 0;
+        int iterations = 0;
         while(graph.nodes().size()!=lastSize && maxIterations!=0){
             maxIterations--;
+            iterations++;
             lastSize=graph.nodes().size();
             addAllProducts(graph);
             System.out.println("Nodes added: "+(graph.nodes().size()-lastSize));
@@ -37,6 +39,8 @@ public class Products {
         if(maxIterations!=0){
             System.out.println("ALL PRODUCTS FOUND!");
         }
+        System.out.println("ITERATIONS: "+iterations);
+
     }
 
     public void addAllProducts(BisimulationGraph graph){

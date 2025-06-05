@@ -46,8 +46,8 @@ public class GreedyClustering implements ClusteringExtractor{
 
         double currentValue = evaluate(currentRanking,currentClustering);
 
-        System.out.println("Previous value: "+previousValue);
-        System.out.println("Current value: "+currentValue);
+        //System.out.println("Previous value: "+previousValue);
+        //System.out.println("Current value: "+currentValue);
 
         System.out.println(currentValue>previousValue);
 
@@ -58,15 +58,15 @@ public class GreedyClustering implements ClusteringExtractor{
 
             BisimulationNode weakest = currentRanking.first().getKey();
 
-            System.out.println("Remove now: "+weakest);
-            System.out.println("Worst relative utlity: "+currentRanking.first().getValue());
+            //System.out.println("Remove now: "+weakest);
+            //System.out.println("Worst relative utlity: "+currentRanking.first().getValue());
 
             currentClustering.remove(weakest);
             lastRemoved=weakest;
             currentRanking = extractRanking(comparisonMatrix,currentClustering);
 
             currentValue=evaluate(currentRanking,currentClustering);
-            System.out.println("Current value: "+currentValue);
+            //System.out.println("Current value: "+currentValue);
         }
 
         // Last node made things better, so we put it back in

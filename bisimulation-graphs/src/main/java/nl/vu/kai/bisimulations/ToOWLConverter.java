@@ -137,7 +137,7 @@ public class ToOWLConverter {
 
     public OWLClass clazz(BisimulationNode node) {
         if(node.removed()){
-            factory.getOWLThing();
+            return factory.getOWLThing();
         }
         if(!shortNames.containsKey(node)) {
             shortNames.put(node,"C"+count);
