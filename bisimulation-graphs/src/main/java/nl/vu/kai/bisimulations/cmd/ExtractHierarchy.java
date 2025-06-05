@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.fasterxml.jackson.databind.type.LogicalType.Collection;
 
@@ -38,6 +40,21 @@ public class ExtractHierarchy {
 
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLOntology ontology = manager.loadOntologyFromOntologyDocument(new File(ontologyPath));
+
+        Set<OWLAxiom> toRemove = ontology.aboxAxioms(Imports.INCLUDED).filter(x -> {
+            if(x instanceof OWLClassAssertionAxiom) {
+                OWLClassAssertionAxiom ax = (OWLClassAssertionAxiom) x;
+                return !(ax.getClassExpression().isNamed() && ax.getIndividual().isNamed());
+            }
+            else if(x instanceof OWLObjectPropertyAssertionAxiom) {
+                OWLObjectPropertyAssertionAxiom ax = (OWLObjectPropertyAssertionAxiom) x;
+                return !(ax.getSubject().isNamed() && ax.getObject().isNamed() && ax.getProperty().isNamed());
+            } else
+                return true;
+        }).collect(Collectors.toSet());
+
+        ontology.removeAxioms(toRemove);
+
         System.out.println("ABOX SIZE: "+ontology.getABoxAxioms(Imports.INCLUDED).size());
         System.out.println("INDIVIDUALS: "+ontology.getIndividualsInSignature(Imports.INCLUDED).size());
 
