@@ -7,7 +7,7 @@ do
 
     echo $ont
 
-    time timeout 600 ./computeHierarchy.sh $ORE_PATH/files/$ont 2 10 &> $ont.log
+    /usr/bin/time -f "TOTAL TIME: %e" timeout 600 ./computeHierarchy.sh $ORE_PATH/files/$ont 2 10 &> $ont.log
     mv output.owl $ont.simGraph.owl
     mv clustering-result.owl $ont.clustering.owl
 done
