@@ -88,7 +88,7 @@ public class ExtractHierarchy {
         converter.addUtility2Label(ont2, graph, evaluator);
         //ontology.addAxioms(ont2.axioms());
 
-        manager.saveOntology(ontology, new FileOutputStream(new File("output.owl")));
+        manager.saveOntology(ont2, new FileOutputStream(new File("output.owl")));
 
         ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
 
