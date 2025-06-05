@@ -30,12 +30,13 @@ public class ToOWLConverter {
         return convert(graph, manager.createOntology());
     }
 
-    public OWLOntology convert(BisimulationGraph graph, OWLOntology basisOntology) {
+    public OWLOntology convert(BisimulationGraph graph, OWLOntology basisOntology) throws OWLOntologyCreationException {
         return convert(graph.nodes(), basisOntology);
     }
 
-    public OWLOntology convert(Collection<BisimulationNode> nodes, OWLOntology basisOntology) {
-        OWLOntology result = basisOntology;
+    public OWLOntology convert(Collection<BisimulationNode> nodes, OWLOntology basisOntology) throws OWLOntologyCreationException {
+        OWLOntology result = basisOntology.getOWLOntologyManager().createOntology();
+        result.addAxioms(basisOntology.axioms());
 
         nodes.forEach(node -> {
             OWLClass clazz = clazz(node);

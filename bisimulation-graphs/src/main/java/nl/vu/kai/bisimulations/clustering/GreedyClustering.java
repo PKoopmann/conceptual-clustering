@@ -27,6 +27,12 @@ public class GreedyClustering implements ClusteringExtractor{
         }
     }
 
+    private Optional<Integer> numberOfClusters = Optional.empty();
+
+    public void setTargetSize(int numberOfClusters) {
+        this.numberOfClusters = Optional.of(numberOfClusters);
+    }
+
     @Override
     public Collection<BisimulationNode> extractClustering(BisimulationGraph graph, BisimulationGraphEvaluator evaluator) {
         Set<BisimulationNode> currentClustering = new HashSet<>(graph.nodes());
@@ -45,7 +51,8 @@ public class GreedyClustering implements ClusteringExtractor{
 
         System.out.println(currentValue>previousValue);
 
-        while(currentValue>=previousValue) {
+        while((numberOfClusters.isEmpty() && currentValue>=previousValue) ||
+                (numberOfClusters.isPresent() && numberOfClusters.get()<=currentClustering.size())) {
 
             previousValue=currentValue;
 
@@ -104,7 +111,8 @@ public class GreedyClustering implements ClusteringExtractor{
             nodes.forEach(node2 -> {
                 //if(evaluator.intersect(node1,node2)) {
                 if(!node2.equals(node1)){
-                    double value = Math.abs(evaluator.relativeUtility(node1, node2));
+                    //double value = Math.abs(evaluator.relativeUtility(node1, node2));
+                    double value = evaluator.relativeUtility(node1, node2);
                     current.add(new Pair<>(node2,value));
                 }
             });

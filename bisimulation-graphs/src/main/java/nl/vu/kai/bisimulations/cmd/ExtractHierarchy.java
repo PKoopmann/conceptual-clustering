@@ -49,7 +49,7 @@ public class ExtractHierarchy {
 
         //graph.restrictToLevel(maxDepth);
         //graph.restrictToMinSize(10);
-        System.out.println("nodes now: "+graph.nodes().size());
+        System.out.println("BOUNDED DEPTH NODES: "+graph.nodes().size());
 
         Products products = new Products();
         /*products.addAllProducts(graph);
@@ -63,18 +63,21 @@ public class ExtractHierarchy {
         */
         products.productsFixpoint(graph,iterations);
         System.out.println("Done with the products");
+        System.out.println("PRODUCTS: "+graph.nodes().size());
         ToOWLConverter converter = new ToOWLConverter(manager);
         converter.setMaxDepth(maxDepth);
         OWLOntology ont2 = converter.convert(graph,ontology);
-        BisimulationGraphEvaluator evaluator = new BisimulationGraphEvaluator(graph,ontology);
-        converter.addUtility2Label(ontology, graph, evaluator);
+        BisimulationGraphEvaluator evaluator = new BisimulationGraphEvaluator(graph,ont2);
+        converter.addUtility2Label(ont2, graph, evaluator);
         //ontology.addAxioms(ont2.axioms());
 
         manager.saveOntology(ontology, new FileOutputStream(new File("output.owl")));
 
         ManchesterOWLSyntaxOWLObjectRendererImpl renderer = new ManchesterOWLSyntaxOWLObjectRendererImpl();
 
-        ClusteringExtractor extractor = new GreedyClustering(); //new TopNClusters(5);
+        GreedyClustering extractor = new GreedyClustering(); //new TopNClusters(5);
+        extractor.setTargetSize(10);
+        //ClusteringExtractor extractor = new TopNClusters(10);
         Collection<BisimulationNode> clustering = extractor.extractClustering(graph,evaluator);
         System.out.println("Number of clusters: "+clustering.size());
         /*clustering.stream()
@@ -82,8 +85,8 @@ public class ExtractHierarchy {
                 .map(renderer::render)
                 .forEach(System.out::println);*/
         OWLOntology clusteringResult = converter.convert(clustering,ontology);
-        converter.addUtility2Label(ontology, graph, evaluator);
-        manager.saveOntology(ontology, new FileOutputStream(new File("clustering-result.owl")));
+        converter.addUtility2Label(clusteringResult, graph, evaluator);
+        manager.saveOntology(clusteringResult, new FileOutputStream(new File("clustering-result.owl")));
 
     }
 }

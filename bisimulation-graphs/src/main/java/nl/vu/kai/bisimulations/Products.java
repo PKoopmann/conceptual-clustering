@@ -34,6 +34,9 @@ public class Products {
             addAllProducts(graph);
             System.out.println("Nodes added: "+(graph.nodes().size()-lastSize));
         }
+        if(maxIterations!=0){
+            System.out.println("ALL PRODUCTS FOUND!");
+        }
     }
 
     public void addAllProducts(BisimulationGraph graph){
