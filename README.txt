@@ -1,3 +1,11 @@
+Generating "useful" class expressions for a given ABox using the conceptual clustering idea.
+
+Based on the following paper:
+
+Towards Conceptual Clustering in EL with Simulation Graphs
+R van Bakel, M Cochez, P Koopmann - 2025 - ceur-ws.org
+
+Compication instructions:
 1. Compile the java part:
   - make sure to have maven installed
   - go into the bisimulation folder
@@ -12,4 +20,6 @@
 3. Adaptations
   - replace the ID in line 7 in the computeHierarchy.sh script
   - in lod_summarization/ID/scripts/preprocessor.config, ensure that "types_to_predicates=true"
+
+The file "computeHierarchy.sh" is used to compute a hierarchy of class expressions for a given ontology.
 
