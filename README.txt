@@ -1,5 +1,4 @@
 1. Compile the java part:
-
   - make sure to have maven installed
   - go into the bisimulation folder
   - execute "mvn package"
