@@ -63,10 +63,12 @@ public class ExtractHierarchy {
         */
         products.productsFixpoint(graph,iterations);
         System.out.println("Done with the products");
+        System.out.println("Nodes in complete graph: "+graph.nodes().size());
+        System.exit(0);
         ToOWLConverter converter = new ToOWLConverter(manager);
         OWLOntology ont2 = converter.convert(graph,ontology);
         BisimulationGraphEvaluator evaluator = new BisimulationGraphEvaluator(graph,ontology);
-        converter.addUtility2Label(ontology, graph, evaluator);
+        converter.addUtility2Label(ont2, graph, evaluator);
         //ontology.addAxioms(ont2.axioms());
 
         manager.saveOntology(ontology, new FileOutputStream(new File("output.owl")));
