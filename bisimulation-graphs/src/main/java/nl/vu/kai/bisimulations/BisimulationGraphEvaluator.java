@@ -1,10 +1,7 @@
 package nl.vu.kai.bisimulations;
 
 import org.semanticweb.elk.owlapi.ElkReasonerFactory;
-import org.semanticweb.owlapi.model.OWLClassExpression;
-import org.semanticweb.owlapi.model.OWLDataFactory;
-import org.semanticweb.owlapi.model.OWLNamedIndividual;
-import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.model.parameters.Imports;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -24,7 +21,7 @@ public class BisimulationGraphEvaluator {
 
     private final OWLReasoner reasoner;
 
-    public BisimulationGraphEvaluator(BisimulationGraph graph, OWLOntology referenceOntology) {
+    public BisimulationGraphEvaluator(BisimulationGraph graph, OWLOntology referenceOntology) throws OWLOntologyCreationException {
         this.graph=graph;
         this.converter=new ToOWLConverter(referenceOntology.getOWLOntologyManager());
         this.factory=referenceOntology.getOWLOntologyManager().getOWLDataFactory();
@@ -54,7 +51,7 @@ public class BisimulationGraphEvaluator {
     public double relativeUtility(BisimulationNode superNode, BisimulationNode subNode){
         Set<OWLNamedIndividual> s1 = individuals(superNode);
         Set<OWLNamedIndividual> s2 = individuals(subNode);
-        s2.retainAll(s1);
+        s1.addAll(s2);
         return relativeUtility(s1,s2);
     }
 

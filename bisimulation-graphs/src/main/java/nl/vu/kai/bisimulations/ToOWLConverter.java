@@ -13,6 +13,8 @@ public class ToOWLConverter {
 
     private Map<BisimulationNode, String> shortNames = new HashMap<>();
 
+    private int maxDepth=-1;
+
     private int count = 0;
 
     public ToOWLConverter(OWLOntologyManager manager){
@@ -20,16 +22,21 @@ public class ToOWLConverter {
         this.factory= manager.getOWLDataFactory();
     }
 
+    public void setMaxDepth(int maxDepth) {
+        this.maxDepth = maxDepth;
+    }
+
     public OWLOntology convert(BisimulationGraph graph) throws OWLOntologyCreationException {
         return convert(graph, manager.createOntology());
     }
 
-    public OWLOntology convert(BisimulationGraph graph, OWLOntology basisOntology) {
+    public OWLOntology convert(BisimulationGraph graph, OWLOntology basisOntology) throws OWLOntologyCreationException {
         return convert(graph.nodes(), basisOntology);
     }
 
-    public OWLOntology convert(Collection<BisimulationNode> nodes, OWLOntology basisOntology) {
-        OWLOntology result = basisOntology;
+    public OWLOntology convert(Collection<BisimulationNode> nodes, OWLOntology basisOntology) throws OWLOntologyCreationException {
+        OWLOntology result = basisOntology.getOWLOntologyManager().createOntology();
+        result.addAxioms(basisOntology.axioms());
 
         nodes.forEach(node -> {
             OWLClass clazz = clazz(node);
@@ -47,12 +54,16 @@ public class ToOWLConverter {
         return result;
     }
 
+
     public OWLClassExpression convert(BisimulationNode node){
         if(!shortNames.containsKey(node)) {
             shortNames.put(node,"C"+count);
             count++;
         }
-        if(UNFOLD_ALL)
+        if(maxDepth>=0){
+            return convert(node,maxDepth);
+        }
+        else if(UNFOLD_ALL)
             return convert(node,Collections.EMPTY_SET);
         else {
             List<OWLClassExpression> conjuncts = new LinkedList<>();
@@ -73,6 +84,28 @@ public class ToOWLConverter {
             else
                 return factory.getOWLObjectIntersectionOf(conjuncts);
         }
+    }
+
+    public OWLClassExpression convert(BisimulationNode node, int maxDepth){
+
+        List<OWLClassExpression> conjuncts = new LinkedList<>();
+        conjuncts.addAll(node.classes());
+        if(maxDepth!=0) {
+            node.successors()
+                    .stream()
+                    .map(
+                            pair ->
+                                    factory.getOWLObjectSomeValuesFrom(
+                                            pair.getKey(),
+                                            convert(pair.getValue(),maxDepth-1)))
+                    .forEach(conjuncts::add);
+        }
+        if (conjuncts.isEmpty())
+            return factory.getOWLThing();
+        else if (conjuncts.size() == 1)
+            return conjuncts.get(0);
+        else
+            return factory.getOWLObjectIntersectionOf(conjuncts);
     }
 
     public OWLClassExpression convert(BisimulationNode node, Set<BisimulationNode> visited) {
@@ -104,7 +137,7 @@ public class ToOWLConverter {
 
     public OWLClass clazz(BisimulationNode node) {
         if(node.removed()){
-            factory.getOWLThing();
+            return factory.getOWLThing();
         }
         if(!shortNames.containsKey(node)) {
             shortNames.put(node,"C"+count);

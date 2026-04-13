@@ -27,6 +27,12 @@ public class GreedyClustering implements ClusteringExtractor{
         }
     }
 
+    private Optional<Integer> numberOfClusters = Optional.empty();
+
+    public void setTargetSize(int numberOfClusters) {
+        this.numberOfClusters = Optional.of(numberOfClusters);
+    }
+
     @Override
     public Collection<BisimulationNode> extractClustering(BisimulationGraph graph, BisimulationGraphEvaluator evaluator) {
         Set<BisimulationNode> currentClustering = new HashSet<>(graph.nodes());
@@ -40,26 +46,27 @@ public class GreedyClustering implements ClusteringExtractor{
 
         double currentValue = evaluate(currentRanking,currentClustering);
 
-        System.out.println("Previous value: "+previousValue);
-        System.out.println("Current value: "+currentValue);
+        //System.out.println("Previous value: "+previousValue);
+        //System.out.println("Current value: "+currentValue);
 
         System.out.println(currentValue>previousValue);
 
-        while(currentValue>previousValue) {
+        while((numberOfClusters.isEmpty() && currentValue>=previousValue) ||
+                (numberOfClusters.isPresent() && numberOfClusters.get()<=currentClustering.size())) {
 
             previousValue=currentValue;
 
             BisimulationNode weakest = currentRanking.first().getKey();
 
-            System.out.println("Remove now: "+weakest);
-            System.out.println("Worst relative utlity: "+currentRanking.first().getValue());
+            //System.out.println("Remove now: "+weakest);
+            //System.out.println("Worst relative utlity: "+currentRanking.first().getValue());
 
             currentClustering.remove(weakest);
             lastRemoved=weakest;
             currentRanking = extractRanking(comparisonMatrix,currentClustering);
 
             currentValue=evaluate(currentRanking,currentClustering);
-            System.out.println("Current value: "+currentValue);
+            //System.out.println("Current value: "+currentValue);
         }
 
         // Last node made things better, so we put it back in
@@ -102,9 +109,11 @@ public class GreedyClustering implements ClusteringExtractor{
         nodes.forEach(node1 -> {
             SortedSet<Pair<BisimulationNode,Double>> current = new TreeSet<>(new PairComparator());
             nodes.forEach(node2 -> {
-                if(evaluator.intersect(node1,node2)) {
+                //if(evaluator.intersect(node1,node2)) {
+                if(!node2.equals(node1)){
+                    //double value = Math.abs(evaluator.relativeUtility(node1, node2));
                     double value = evaluator.relativeUtility(node1, node2);
-                    current.add(new Pair<>(node2,Math.abs(value)));
+                    current.add(new Pair<>(node2,value));
                 }
             });
             matrix.put(node1,current);
