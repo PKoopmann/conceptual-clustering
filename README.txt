@@ -5,7 +5,7 @@ Based on the following paper:
 Towards Conceptual Clustering in EL with Simulation Graphs
 R van Bakel, M Cochez, P Koopmann - 2025 - ceur-ws.org
 
-Compication instructions:
+Compilation instructions:
 1. Compile the java part:
   - make sure to have maven installed
   - go into the bisimulation folder
