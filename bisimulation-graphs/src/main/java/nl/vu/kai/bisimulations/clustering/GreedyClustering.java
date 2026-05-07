@@ -92,8 +92,11 @@ public class GreedyClustering implements ClusteringExtractor{
                     if(currentClustering.contains(x) && comparisonMatrix.containsKey(x) && !comparisonMatrix.get(x).isEmpty()) {
                         Pair<BisimulationNode, Double> worst = comparisonMatrix.get(x).first();
                         while (worst!=null && !currentClustering.contains(worst.getKey())) {
+                            // then there is something in the matrix that is not in the current clustering anymore,
+                            // and should be removed from the matrix.
                             comparisonMatrix.get(x).remove(worst);
-                            worst = comparisonMatrix.get(x).isEmpty()?null:comparisonMatrix.get(x).first();
+                            // we then pick the next one, unless that one also needs to be removed
+                            worst = comparisonMatrix.get(x).isEmpty() ? null : comparisonMatrix.get(x).first();
                         }
                         if(worst!=null)
                             result.add(new Pair(x, worst.getValue()));

@@ -133,7 +133,8 @@ public class BisimulationNode {
             return ((BisimulationNode)other).id.equals(id);
     }
 
-    public int hashcode() {
+    @Override
+    public int hashCode() {
         return id.hashCode();
     }
 

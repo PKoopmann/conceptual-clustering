@@ -4,7 +4,7 @@ export ONTOLOGY=$1
 export MAX_DEPTH=$2
 export MAX_ITERATIONS=$3
 
-export LOD_ID=d9a8fda5352cb6f8499e02d615b03d5a2831d51d
+export LOD_ID=a78c53d82a60835f0f972bf4d8365b558c045752
 
 echo Using ontology $ONTOLOGY
 
